@@ -122,7 +122,7 @@ TEAMWORK.TableData=function(settings) {
 			found,
 			index,
 			filterValue=self.filterValue().toLowerCase(),
-			filterValueParsed=filterValue.split('.'), 
+			filterValueParsed=filterValue.split(':'), 
 			fullSearch=true;
 
 		/* if the search is part of a fieldname then don't search at all */
@@ -131,7 +131,7 @@ TEAMWORK.TableData=function(settings) {
 				fullSearch=false;
 				console.log('no search:'+filterValue);
 			}
-			/* check to see if the search value is prefixed with a fieldname followed by a . */
+			/* check to see if the search value is prefixed with a fieldname followed by a : */
 			else {
 				index=self.fieldsSearch.toLowerCase().indexOf(';'+filterValueParsed[0]+';');
 				if (filterValueParsed.length>1 && index!=-1) {
