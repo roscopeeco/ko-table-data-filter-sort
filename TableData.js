@@ -89,6 +89,8 @@ TEAMWORK.TableData=function(settings) {
 	/* Sorting */
 	this.sortKey=ko.observable('index');
 	this.sortOrder=1;
+	this.sortKeyUnwrapped=this.sortKey();
+	self.sortOrderNegative=this.sortOrder*-1;
 	
 	this.sortColumn=function(heading) {
 	
@@ -99,18 +101,24 @@ TEAMWORK.TableData=function(settings) {
 			self.sortKey(heading.key);
 			self.sortOrder=1;
 		}
+		self.sortKeyUnwrapped=self.sortKey();
+		self.sortOrderNegative=self.sortOrder*-1;
+		
+		var start=new Date().getTime();
 		self.items.sort(self.sortByKey);
-	
+		var end=new Date().getTime();
+
+		console.log(end-start);
 	};
 
 	this.sortByKey=function(a, b) {
 		
-		a=ko.unwrap(a[self.sortKey()]);
-		b=ko.unwrap(b[self.sortKey()]);
+		a=a[self.sortKeyUnwrapped];
+		b=b[self.sortKeyUnwrapped];
 		
-		return a == b ? 0 : (a < b ? -1*self.sortOrder : 1*self.sortOrder);
+		return a === b ? 0 : (a < b ? self.sortOrderNegative : self.sortOrder);
 	};
-	
+
 	/* Filtering */
 	this.fieldsSearch=';';
 	this.filterValue=ko.observable('').extend({ throttle: 400 });
@@ -131,11 +139,10 @@ TEAMWORK.TableData=function(settings) {
 				fullSearch=false;
 				console.log('no search:'+filterValue);
 			}
-			/* check to see if the search value is prefixed with a fieldname followed by a : */
+			/* check to see if the search value is prefixed with a fieldname followed by a . */
 			else {
 				index=self.fieldsSearch.toLowerCase().indexOf(';'+filterValueParsed[0]+';');
 				if (filterValueParsed.length>1 && index!=-1) {
-					key=filterValueParsed[0];
 					key=self.fieldsSearch.substr(index+1, filterValueParsed[0].length);
 					filterValue=filterValue.substr(key.length+1);
 					fullSearch=false;
